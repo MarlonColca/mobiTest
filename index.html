@@ -1,39 +1,55 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Back Button Example</title>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="http://tristanedwards.me/u/SweetAlert/lib/sweet-alert.css" />
+</head>
+<body>
 
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-    <script type="text/javascript" charset="utf-8">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="http://tristanedwards.me/u/SweetAlert/lib/sweet-alert.js"></script>
+	<script type="text/javascript" src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+	<script>
+			/*
+			var socket = io.connect('http://ivsever.ngrok.com');
+			socket.on('news', function (data) {
+				console.log(data);
+				socket.emit('my other event', { my: 'data' });
+			});
+			*/
+			// sweetAlert("lolololol");
+			var socket = io.connect('http://ivsever.ngrok.com');
 
-        // Wait for device API libraries to load
-        //
-        function onLoad() {
-            document.addEventListener("deviceready", onDeviceReady, false);
-        }
+			socket.on('confirmed', function(data){
+				console.log(data);
+				sweetAlert("Wooot");
+			});
+			
+			function setVisited(opts) { //codigoCliente, conPedido, setPedidos) {
+				/*
+					opts = {
+						codigoCliente: string, codigoCliente,
+						conPedido : '1'|'0' hizo o no el pedido, 
+						setPedidos : [] array de pedidos.
+					}
+				*/
+				socket.emit('setVisited', {
+					'codigoCliente' : opts.codigoCliente,
+					'conPedido'		: opts.conPedido,
+					'setPedidos'	: opts.setPedidos instanceof Array ? opts.setPedidos : []
+				});
+			}
+			setVisited({
+				'codigoCliente' : '001',
+				'conPedido'		: '1',
+				'setPedidos'	: [
+					{'codigoProducto' : 'codeTest123', 'cantidad' : '5'}, 
+					{'codigoProducto' : 'codeTest321', 'cantidad' : '10'}
+				]
+			});
+		
+		
+	</script>
 
-        // device APIs are available
-        //
-        function onDeviceReady() {
-            // Register the event listener
-            document.addEventListener("backbutton", onBackKeyDown, false);
-        }
-
-        // Handle the back button
-        //
-        function onBackKeyDown() {
-            alert("Where do you think you are going?");
-        }
-
-        function closeThisApp() {
-            navigator.app.exitApp();
-        }
-
-    </script>
-  </head>
-  <body onload="onLoad()">
-
-    This should be work!
-    <button onclick="closeThisApp()">Close this app!</button>
-  </body>
+</body>
 </html>
